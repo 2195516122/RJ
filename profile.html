@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - 日日记</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">📔</span>
+                    <span class="logo-text">日日记</span>
+                </div>
+                <nav class="nav">
+                    <a href="index.html" class="nav-item">首页</a>
+                    <a href="profile.html" class="nav-item active">我的日记</a>
+                    <a href="profile.html#profile" class="nav-item">个人中心</a>
+                </nav>
+                <button class="btn-primary write-btn" onclick="window.location.href='write.html'">
+                    <span class="btn-icon">✏️</span>
+                    写日记
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Profile Section -->
+            <section class="profile-section" id="profileSection">
+                <div class="profile-card">
+                    <div class="profile-avatar">
+                        <div class="avatar-placeholder">
+                            <span id="avatarInitial">用</span>
+                        </div>
+                    </div>
+                    <div class="profile-info">
+                        <h2 class="profile-name" id="profileName">用户</h2>
+                        <div class="profile-meta">
+                            <span class="meta-item">
+                                <span class="meta-icon">📅</span>
+                                <span>注册于 <span id="registerDate">--</span></span>
+                            </span>
+                            <span class="meta-item">
+                                <span class="meta-icon">📝</span>
+                                <span>日记 <span id="diaryCount">0</span> 篇</span>
+                            </span>
+                        </div>
+                    </div>
+                    <button class="btn-secondary edit-profile-btn" onclick="openEditProfile()">
+                        编辑资料
+                    </button>
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-content">
+                            <div class="stat-label">本月已写</div>
+                            <div class="stat-value" id="monthlyCount">0</div>
+                            <div class="stat-unit">天</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-content">
+                            <div class="stat-label">连续记录</div>
+                            <div class="stat-value" id="currentStreak">0</div>
+                            <div class="stat-unit">天</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-content">
+                            <div class="stat-label">最长连续</div>
+                            <div class="stat-value" id="longestStreak">0</div>
+                            <div class="stat-unit">天</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-content">
+                            <div class="stat-label">日记总数</div>
+                            <div class="stat-value" id="totalCount">0</div>
+                            <div class="stat-unit">篇</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tabs -->
+            <section class="tabs-section">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="diaries" onclick="switchTab('diaries')">
+                        我的日记
+                    </button>
+                    <button class="tab-btn" data-tab="shared" onclick="switchTab('shared')">
+                        已分享
+                    </button>
+                </div>
+            </section>
+
+            <!-- Diary List Tab -->
+            <section class="diary-section tab-content" id="diariesTab">
+                <div class="section-header">
+                    <h2 class="section-title">我的日记</h2>
+                    <div class="section-actions">
+                        <select class="filter-select" id="filterSelect" onchange="filterDiaries()">
+                            <option value="all">全部</option>
+                            <option value="private">私密</option>
+                            <option value="public">公开</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="diary-list" id="diaryList">
+                    <!-- Diary items will be generated by JavaScript -->
+                    <div class="empty-state" id="emptyState">
+                        <div class="empty-icon">📖</div>
+                        <p class="empty-text">还没有日记，开始写下第一篇吧</p>
+                        <button class="btn-primary" onclick="window.location.href='write.html'">
+                            写第一篇日记
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Shared List Tab -->
+            <section class="diary-section tab-content" id="sharedTab" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">已分享日记</h2>
+                </div>
+                <div class="diary-list" id="sharedList">
+                    <!-- Shared diary items will be generated by JavaScript -->
+                    <div class="empty-state" id="sharedEmptyState">
+                        <div class="empty-icon">🔗</div>
+                        <p class="empty-text">还没有分享任何日记</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text">&copy; 2024 日日记 - 记录生活每一天</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal" id="editProfileModal">
+        <div class="modal-content">
+            <h3 class="modal-title">编辑资料</h3>
+            <div class="form-group">
+                <label class="form-label">昵称</label>
+                <input
+                    type="text"
+                    class="form-input"
+                    id="editNickname"
+                    placeholder="输入昵称"
+                    maxlength="20"
+                >
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeEditProfile()">取消</button>
+                <button class="btn-primary" onclick="saveProfile()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html>

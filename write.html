@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>写日记 - 日日记</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">📔</span>
+                    <span class="logo-text">日日记</span>
+                </div>
+                <nav class="nav">
+                    <a href="index.html" class="nav-item">首页</a>
+                    <a href="profile.html" class="nav-item">我的日记</a>
+                    <a href="profile.html" class="nav-item">个人中心</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Write Diary Form -->
+            <section class="write-section">
+                <div class="write-header">
+                    <h1 class="write-title">写日记</h1>
+                    <div class="write-meta">
+                        <span class="write-date" id="writeDate"></span>
+                        <span class="auto-save-status" id="autoSaveStatus"></span>
+                    </div>
+                </div>
+
+                <div class="write-form">
+                    <!-- Title Input -->
+                    <div class="form-group">
+                        <label class="form-label" for="diaryTitle">标题</label>
+                        <input
+                            type="text"
+                            class="form-input"
+                            id="diaryTitle"
+                            placeholder="给日记起个标题..."
+                            maxlength="100"
+                            oninput="handleInput()"
+                        >
+                    </div>
+
+                    <!-- Content Textarea -->
+                    <div class="form-group">
+                        <label class="form-label" for="diaryContent">内容</label>
+                        <textarea
+                            class="form-textarea"
+                            id="diaryContent"
+                            placeholder="记录今天的想法、心情、发生的事情..."
+                            rows="15"
+                            oninput="handleInput()"
+                        ></textarea>
+                        <div class="word-count">
+                            <span id="currentCount">0</span> 字
+                        </div>
+                    </div>
+
+                    <!-- Privacy Toggle -->
+                    <div class="form-group">
+                        <label class="form-label">隐私设置</label>
+                        <div class="privacy-toggle">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="isPublic">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="privacy-label">公开分享</span>
+                            <span class="privacy-hint">开启后可生成分享链接</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="form-actions">
+                        <button class="btn-secondary" onclick="cancelWrite()">
+                            取消
+                        </button>
+                        <button class="btn-primary" onclick="saveDiary()">
+                            <span class="btn-icon">💾</span>
+                            保存日记
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Cancel Confirmation Modal -->
+    <div class="modal" id="cancelModal">
+        <div class="modal-content">
+            <h3 class="modal-title">确认离开？</h3>
+            <p class="modal-message">您有未保存的内容，确定要离开吗？</p>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeCancelModal()">继续编辑</button>
+                <button class="btn-danger" onclick="confirmCancel()">离开</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="write.js"></script>
+</body>
+</html>

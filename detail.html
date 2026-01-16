@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日记详情 - 日日记</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">📔</span>
+                    <span class="logo-text">日日记</span>
+                </div>
+                <nav class="nav">
+                    <a href="index.html" class="nav-item">首页</a>
+                    <a href="profile.html" class="nav-item">我的日记</a>
+                    <a href="profile.html" class="nav-item">个人中心</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Diary Detail -->
+            <section class="detail-section">
+                <!-- Back Button -->
+                <button class="back-btn" onclick="goBack()">
+                    <span>&larr;</span> 返回
+                </button>
+
+                <!-- Detail Content -->
+                <div class="detail-content" id="detailContent">
+                    <!-- Diary Header -->
+                    <div class="detail-header">
+                        <h1 class="detail-title" id="detailTitle"></h1>
+                        <div class="detail-meta">
+                            <span class="detail-date" id="detailDate"></span>
+                            <span class="detail-time" id="detailTime"></span>
+                            <span class="detail-visibility" id="detailVisibility">
+                                <span class="visibility-icon">🔒</span>
+                                <span class="visibility-text">私密</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Diary Body -->
+                    <div class="detail-body">
+                        <div class="detail-text" id="detailText"></div>
+                        <div class="detail-word-count">
+                            共 <span id="detailWordCount">0</span> 字
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="detail-actions">
+                        <button class="btn-secondary" onclick="editDiary()">
+                            <span class="btn-icon">✏️</span>
+                            编辑
+                        </button>
+                        <button class="btn-secondary" onclick="shareDiary()">
+                            <span class="btn-icon">🔗</span>
+                            分享
+                        </button>
+                        <button class="btn-danger" onclick="deleteDiary()">
+                            <span class="btn-icon">🗑️</span>
+                            删除
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text">&copy; 2024 日日记 - 记录生活每一天</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Share Modal -->
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
+            <h3 class="modal-title">分享日记</h3>
+            <div class="share-link-container">
+                <input
+                    type="text"
+                    class="share-link-input"
+                    id="shareLinkInput"
+                    readonly
+                >
+                <button class="btn-primary copy-btn" onclick="copyShareLink()">
+                    复制链接
+                </button>
+            </div>
+            <div class="share-notice">
+                <p>⚠️ 任何人通过此链接都可以查看此日记</p>
+                <p>您可以在个人中心随时关闭分享</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeShareModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <h3 class="modal-title">确认删除？</h3>
+            <p class="modal-message">删除后将无法恢复，确定要删除这篇日记吗？</p>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeDeleteModal()">取消</button>
+                <button class="btn-danger" onclick="confirmDelete()">确认删除</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="detail.js"></script>
+</body>
+</html>

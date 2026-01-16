@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分享日记 - 日日记</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="share-page">
+    <!-- Header -->
+    <header class="header header-simple">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">📔</span>
+                    <span class="logo-text">日日记</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Share Detail -->
+            <section class="share-section">
+                <div class="share-content" id="shareContent">
+                    <!-- Loading State -->
+                    <div class="loading-state" id="loadingState">
+                        <div class="loading-spinner"></div>
+                        <p>加载中...</p>
+                    </div>
+
+                    <!-- Not Found State -->
+                    <div class="error-state" id="errorState" style="display: none;">
+                        <div class="error-icon">😕</div>
+                        <p class="error-text">日记不存在或已被删除</p>
+                        <a href="index.html" class="btn-primary">前往日日记</a>
+                    </div>
+
+                    <!-- Share Detail (hidden initially) -->
+                    <div class="share-detail" id="shareDetail" style="display: none;">
+                        <!-- Diary Header -->
+                        <div class="detail-header">
+                            <h1 class="detail-title" id="shareTitle"></h1>
+                            <div class="detail-meta">
+                                <span class="detail-date" id="shareDate"></span>
+                                <span class="detail-time" id="shareTime"></span>
+                                <span class="detail-visibility-badge">
+                                    <span class="visibility-icon">🌐</span>
+                                    <span class="visibility-text">公开分享</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Diary Body -->
+                        <div class="detail-body">
+                            <div class="detail-text" id="shareText"></div>
+                            <div class="detail-word-count">
+                                共 <span id="shareWordCount">0</span> 字
+                            </div>
+                        </div>
+
+                        <!-- Share Footer -->
+                        <div class="share-footer">
+                            <p>来自「日日记」的分享</p>
+                            <a href="index.html" class="link-text">开始写日记，记录生活</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text">&copy; 2024 日日记 - 记录生活每一天</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="share.js"></script>
+</body>
+</html>
