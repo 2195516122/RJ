@@ -225,6 +225,11 @@ function saveDiary(title, content, isPublic) {
 }
 
 /**
+ * Global function to save diary (exposed for write.js)
+ */
+window.saveDiaryToStorage = saveDiary;
+
+/**
  * Update existing diary
  */
 function updateDiary(id, title, content, isPublic) {

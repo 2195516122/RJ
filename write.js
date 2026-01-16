@@ -90,9 +90,9 @@ function saveDraftData() {
 // ============================================
 
 /**
- * Save diary
+ * Handle save button click
  */
-function saveDiary() {
+function handleSaveDiary() {
     const title = document.getElementById('diaryTitle').value.trim();
     const content = document.getElementById('diaryContent').value.trim();
     const isPublic = document.getElementById('isPublic').checked;
@@ -115,8 +115,8 @@ function saveDiary() {
             return;
         }
     } else {
-        // Save new diary
-        diary = saveDiary(title, content, isPublic);
+        // Save new diary (call function from script.js)
+        diary = window.saveDiaryToStorage(title, content, isPublic);
         showToast('日记已保存');
     }
 

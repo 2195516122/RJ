@@ -85,9 +85,9 @@ function editDiary() {
 }
 
 /**
- * Delete diary
+ * Handle delete button click
  */
-function deleteDiary() {
+function handleDeleteDiary() {
     if (!currentDiary) return;
     openModal('deleteModal');
 }
