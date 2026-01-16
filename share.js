@@ -83,7 +83,7 @@ function renderSharedDiary(diary) {
     document.getElementById('shareWordCount').textContent = wordCount;
 
     // Update page title
-    document.title = `${diary.title} - 日日记`;
+    document.title = `${diary.title} - 子秋记`;
 }
 
 /**
