@@ -2,14 +2,19 @@
 // Share Page - Initialize
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
+    // Try both old (share) and new (data) URL parameters
+    const dataParam = getUrlParam('data');
     const shareId = getUrlParam('share');
 
-    if (!shareId) {
+    if (dataParam) {
+        // New method: data encoded in URL
+        loadSharedDiaryFromData(dataParam);
+    } else if (shareId) {
+        // Old method: lookup by shareId (for backward compatibility)
+        loadSharedDiaryById(shareId);
+    } else {
         showError();
-        return;
     }
-
-    loadSharedDiary(shareId);
 });
 
 // ============================================
@@ -17,20 +22,39 @@ document.addEventListener('DOMContentLoaded', () => {
 // ============================================
 
 /**
- * Load diary by share ID
+ * Load diary from encoded URL data
  */
-function loadSharedDiary(shareId) {
-    // Simulate loading delay for better UX
-    setTimeout(() => {
-        const diary = getDiaryByShareId(shareId);
+function loadSharedDiaryFromData(encodedData) {
+    try {
+        // Decode the data
+        const decodedData = JSON.parse(decodeURIComponent(escape(atob(encodedData))));
 
-        if (!diary) {
-            showError();
-            return;
-        }
+        const diary = {
+            title: decodedData.title,
+            content: decodedData.content,
+            createdAt: decodedData.date
+        };
 
         renderSharedDiary(diary);
-    }, 300);
+    } catch (error) {
+        console.error('Error decoding share data:', error);
+        showError();
+    }
+}
+
+/**
+ * Load diary by share ID (legacy method)
+ */
+function loadSharedDiaryById(shareId) {
+    // This method only works for the same browser (localStorage)
+    const diary = getDiaryByShareId(shareId);
+
+    if (!diary) {
+        showError();
+        return;
+    }
+
+    renderSharedDiary(diary);
 }
 
 /**

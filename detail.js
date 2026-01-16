@@ -145,19 +145,17 @@ function deleteDiaryFromStorage(id) {
 function shareDiary() {
     if (!currentDiary) return;
 
-    // If not public, prompt to make public first
-    if (!currentDiary.isPublic) {
-        showToast('请先将日记设置为公开', 'warning');
-        return;
-    }
+    // Encode diary data into URL (base64)
+    const diaryData = {
+        title: currentDiary.title,
+        content: currentDiary.content,
+        date: currentDiary.createdAt
+    };
 
-    if (!currentDiary.shareId) {
-        showToast('分享链接生成失败', 'error');
-        return;
-    }
+    const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(diaryData))));
 
-    // Generate share URL
-    const shareUrl = `${window.location.origin}${window.location.pathname.replace('detail.html', 'share.html')}?share=${currentDiary.shareId}`;
+    // Generate share URL with encoded data
+    const shareUrl = `${window.location.origin}${window.location.pathname.replace('detail.html', 'share.html')}?data=${encodedData}`;
 
     // Show modal with link
     document.getElementById('shareLinkInput').value = shareUrl;
