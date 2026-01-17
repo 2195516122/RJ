@@ -34,6 +34,15 @@ function updateStats() {
     document.getElementById('currentStreak').textContent = stats.currentStreak;
     document.getElementById('longestStreak').textContent = stats.longestStreak;
     document.getElementById('totalCount').textContent = stats.totalCount;
+
+    // Update weekly word count
+    const weeklyWords = calculateWeeklyWordCount();
+    document.getElementById('weeklyWords').textContent = weeklyWords.toLocaleString();
+
+    // Update peak writing time
+    const peakTime = analyzeWritingPeakHours();
+    document.getElementById('peakTime').textContent = peakTime.period;
+    document.getElementById('peakTimeUnit').textContent = peakTime.hour !== null ? `${peakTime.hour}:00` : '暂无数据';
 }
 
 // ============================================

@@ -415,6 +415,88 @@ function calculateStats() {
 }
 
 /**
+ * Calculate weekly word count
+ */
+function calculateWeeklyWordCount() {
+    const diaries = getDiaries();
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+
+    // Calculate start of week (Monday)
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    // Filter diaries from this week
+    const weeklyDiaries = diaries.filter(d => {
+        const diaryDate = new Date(d.createdAt);
+        return diaryDate >= startOfWeek;
+    });
+
+    // Calculate total words
+    const totalWords = weeklyDiaries.reduce((sum, diary) => {
+        return sum + countWords(diary.content || '');
+    }, 0);
+
+    return totalWords;
+}
+
+/**
+ * Analyze writing peak hours
+ */
+function analyzeWritingPeakHours() {
+    const diaries = getDiaries();
+
+    // Count diaries by hour
+    const hourCounts = new Array(24).fill(0);
+    diaries.forEach(diary => {
+        const hour = new Date(diary.createdAt).getHours();
+        hourCounts[hour]++;
+    });
+
+    // Find peak hours (top 3)
+    const peaks = [];
+    for (let i = 0; i < 24; i++) {
+        if (hourCounts[i] > 0) {
+            peaks.push({ hour: i, count: hourCounts[i] });
+        }
+    }
+
+    // Sort by count descending and take top 3
+    peaks.sort((a, b) => b.count - a.count);
+    const topPeaks = peaks.slice(0, 3);
+
+    // Format result
+    const timeRanges = {
+        morning: { start: 6, end: 11, label: '早晨' },
+        afternoon: { start: 12, end: 17, label: '下午' },
+        evening: { start: 18, end: 23, label: '晚上' },
+        night: { start: 0, end: 5, label: '深夜' }
+    };
+
+    if (topPeaks.length === 0) {
+        return { period: '暂无数据', hour: null };
+    }
+
+    const peak = topPeaks[0];
+    let period = '其他';
+
+    for (const [key, range] of Object.entries(timeRanges)) {
+        if (peak.hour >= range.start && peak.hour <= range.end) {
+            period = range.label;
+            break;
+        }
+    }
+
+    return {
+        period: period,
+        hour: peak.hour,
+        count: peak.count,
+        allPeaks: topPeaks
+    };
+}
+
+/**
  * Get diary counts per date for calendar
  */
 function getDiaryCountsByMonth(year, month) {
