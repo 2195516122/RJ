@@ -84,6 +84,24 @@ function renderDiary(diary) {
         `;
     }
 
+    // Tags
+    const tagsEl = document.getElementById('detailTags');
+    if (diary.tags && diary.tags.length > 0) {
+        const tagLabels = {
+            '工作': '💼',
+            '学习': '📚',
+            '情绪': '💭',
+            '旅行': '✈️'
+        };
+
+        tagsEl.innerHTML = diary.tags.map(tag =>
+            `<span class="detail-tag">${tagLabels[tag] || '#'} ${tag}</span>`
+        ).join('');
+        tagsEl.style.display = 'flex';
+    } else {
+        tagsEl.style.display = 'none';
+    }
+
     // Content
     document.getElementById('detailText').textContent = diary.content;
 

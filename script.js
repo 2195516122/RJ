@@ -201,7 +201,7 @@ function getDiaryById(id) {
 /**
  * Save new diary
  */
-function saveDiary(title, content, isPublic, mood) {
+function saveDiary(title, content, isPublic, mood, tags) {
     const now = new Date();
     const diary = {
         id: generateId(),
@@ -210,6 +210,7 @@ function saveDiary(title, content, isPublic, mood) {
         isPublic: isPublic || false,
         shareId: isPublic ? generateId() : null,
         mood: mood || null,
+        tags: tags || [],
         createdAt: now.toISOString(),
         updatedAt: now.toISOString()
     };
@@ -233,7 +234,7 @@ window.saveDiaryToStorage = saveDiary;
 /**
  * Update existing diary
  */
-function updateDiary(id, title, content, isPublic, mood) {
+function updateDiary(id, title, content, isPublic, mood, tags) {
     const diaries = getDiaries();
     const index = diaries.findIndex(d => d.id === id);
 
@@ -246,6 +247,7 @@ function updateDiary(id, title, content, isPublic, mood) {
     diary.content = content || diary.content;
     diary.isPublic = isPublic !== undefined ? isPublic : diary.isPublic;
     diary.mood = mood !== undefined ? mood : diary.mood;
+    diary.tags = tags !== undefined ? tags : diary.tags;
 
     // Generate or remove share ID based on visibility
     if (diary.isPublic && !diary.shareId) {
@@ -295,6 +297,35 @@ function filterDiariesByVisibility(diaries, filter) {
     if (filter === 'public') return diaries.filter(d => d.isPublic);
     if (filter === 'private') return diaries.filter(d => !d.isPublic);
     return diaries;
+}
+
+/**
+ * Search diaries by query
+ */
+function searchDiaries(query) {
+    const diaries = getDiaries();
+    if (!query || query.trim() === '') return diaries;
+
+    const searchTerms = query.toLowerCase().trim();
+
+    return diaries.filter(diary => {
+        // Search in title
+        if (diary.title && diary.title.toLowerCase().includes(searchTerms)) {
+            return true;
+        }
+
+        // Search in content
+        if (diary.content && diary.content.toLowerCase().includes(searchTerms)) {
+            return true;
+        }
+
+        // Search in tags
+        if (diary.tags && diary.tags.some(tag => tag.toLowerCase().includes(searchTerms))) {
+            return true;
+        }
+
+        return false;
+    });
 }
 
 /**

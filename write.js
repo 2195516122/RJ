@@ -5,6 +5,7 @@ let autoSaveTimer = null;
 let hasUnsavedChanges = false;
 let editDiaryId = null;
 let selectedMood = null;
+let selectedTags = [];
 
 // Mood emoji mapping
 const MOOD_EMOJIS = {
@@ -35,6 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize mood selector
     initMoodSelector();
+
+    // Initialize tags selector
+    initTagsSelector();
 
     // Focus on title
     document.getElementById('diaryTitle').focus();
@@ -99,6 +103,31 @@ function initMoodSelector() {
 }
 
 /**
+ * Initialize tags selector
+ */
+function initTagsSelector() {
+    const tagButtons = document.querySelectorAll('.tag-btn');
+
+    tagButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tag = btn.dataset.tag;
+
+            // Toggle selection
+            if (btn.classList.contains('selected')) {
+                btn.classList.remove('selected');
+                selectedTags = selectedTags.filter(t => t !== tag);
+            } else {
+                btn.classList.add('selected');
+                selectedTags.push(tag);
+            }
+
+            // Update hidden input
+            document.getElementById('selectedTags').value = selectedTags.join(',');
+        });
+    });
+}
+
+/**
  * Save draft data
  */
 function saveDraftData() {
@@ -132,6 +161,7 @@ function handleSaveDiary() {
     const content = document.getElementById('diaryContent').value.trim();
     const isPublic = document.getElementById('isPublic').checked;
     const mood = selectedMood || null;
+    const tags = selectedTags || [];
 
     // Validate
     if (!content) {
@@ -143,7 +173,7 @@ function handleSaveDiary() {
     let diary;
     if (editDiaryId) {
         // Update existing diary
-        diary = updateDiary(editDiaryId, title, content, isPublic, mood);
+        diary = updateDiary(editDiaryId, title, content, isPublic, mood, tags);
         if (diary) {
             showToast('日记已更新');
         } else {
@@ -152,7 +182,7 @@ function handleSaveDiary() {
         }
     } else {
         // Save new diary (call function from script.js)
-        diary = window.saveDiaryToStorage(title, content, isPublic, mood);
+        diary = window.saveDiaryToStorage(title, content, isPublic, mood, tags);
         showToast('日记已保存');
     }
 
@@ -189,6 +219,20 @@ function loadDiaryForEdit(id) {
         if (moodBtn) {
             moodBtn.classList.add('selected');
         }
+    }
+
+    // Load tags if exists
+    if (diary.tags && diary.tags.length > 0) {
+        selectedTags = [...diary.tags];
+        document.getElementById('selectedTags').value = selectedTags.join(',');
+
+        // Select tag buttons
+        diary.tags.forEach(tag => {
+            const tagBtn = document.querySelector(`.tag-btn[data-tag="${tag}"]`);
+            if (tagBtn) {
+                tagBtn.classList.add('selected');
+            }
+        });
     }
 
     // Update word count

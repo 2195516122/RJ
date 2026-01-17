@@ -109,6 +109,16 @@
                 <div class="section-header">
                     <h2 class="section-title">我的日记</h2>
                     <div class="section-actions">
+                        <div class="search-box">
+                            <input
+                                type="text"
+                                class="search-input"
+                                id="searchInput"
+                                placeholder="搜索标题、内容、标签..."
+                                oninput="handleSearch()"
+                            >
+                            <span class="search-icon">🔍</span>
+                        </div>
                         <select class="filter-select" id="filterSelect" onchange="filterDiaries()">
                             <option value="all">全部</option>
                             <option value="private">私密</option>

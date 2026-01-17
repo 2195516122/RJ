@@ -2,6 +2,7 @@
 // Home Page - State
 // ============================================
 let currentFilter = 'all';
+let currentSearchQuery = '';
 let viewDate = new Date();
 
 // Mood emoji mapping
@@ -141,7 +142,14 @@ function showDiariesForDate(date) {
  * Render diary list
  */
 function renderDiaryList() {
-    const diaries = getDiaries();
+    let diaries = getDiaries();
+
+    // Apply search filter
+    if (currentSearchQuery) {
+        diaries = searchDiaries(currentSearchQuery);
+    }
+
+    // Apply visibility filter
     const filteredDiaries = filterDiariesByVisibility(diaries, currentFilter);
     const diaryList = document.getElementById('diaryList');
     const emptyState = document.getElementById('emptyState');
@@ -177,16 +185,41 @@ function createDiaryCard(diary) {
     const date = new Date(diary.createdAt);
     const wordCount = countWords(diary.content);
 
+    // Build mood indicator
+    let moodIndicator = '';
+    if (diary.mood && MOOD_EMOJIS[diary.mood]) {
+        moodIndicator = `<span class="card-mood">${MOOD_EMOJIS[diary.mood]}</span>`;
+    }
+
+    // Build tags
+    let tagsHtml = '';
+    if (diary.tags && diary.tags.length > 0) {
+        const tagLabels = {
+            '工作': '💼',
+            '学习': '📚',
+            '情绪': '💭',
+            '旅行': '✈️'
+        };
+
+        tagsHtml = `<div class="card-tags">
+            ${diary.tags.map(tag => `<span class="card-tag">${tagLabels[tag] || '#'} ${tag}</span>`).join('')}
+        </div>`;
+    }
+
     card.innerHTML = `
         <div class="diary-card-header">
             <h3 class="diary-card-title">${escapeHtml(diary.title)}</h3>
-            <div class="diary-card-visibility">
-                <span>${diary.isPublic ? '🌐 公开' : '🔒 私密'}</span>
+            <div class="diary-card-meta-inline">
+                ${moodIndicator}
+                <div class="diary-card-visibility">
+                    <span>${diary.isPublic ? '🌐 公开' : '🔒 私密'}</span>
+                </div>
             </div>
         </div>
         <div class="diary-card-content">
             ${escapeHtml(diary.content || '暂无内容')}
         </div>
+        ${tagsHtml}
         <div class="diary-card-footer">
             <span class="diary-card-date">${formatDateDisplay(date)}</span>
             <div class="diary-card-meta">
@@ -205,6 +238,15 @@ function createDiaryCard(diary) {
 function filterDiaries() {
     const filterSelect = document.getElementById('filterSelect');
     currentFilter = filterSelect.value;
+    renderDiaryList();
+}
+
+/**
+ * Handle search input
+ */
+function handleSearch() {
+    const searchInput = document.getElementById('searchInput');
+    currentSearchQuery = searchInput.value;
     renderDiaryList();
 }
 

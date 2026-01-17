@@ -162,6 +162,21 @@ function createDiaryCard(diary) {
         moodIndicator = `<span class="card-mood">${MOOD_EMOJIS[diary.mood]}</span>`;
     }
 
+    // Build tags
+    let tagsHtml = '';
+    if (diary.tags && diary.tags.length > 0) {
+        const tagLabels = {
+            '工作': '💼',
+            '学习': '📚',
+            '情绪': '💭',
+            '旅行': '✈️'
+        };
+
+        tagsHtml = `<div class="card-tags">
+            ${diary.tags.map(tag => `<span class="card-tag">${tagLabels[tag] || '#'} ${tag}</span>`).join('')}
+        </div>`;
+    }
+
     card.innerHTML = `
         <div class="diary-card-header">
             <h3 class="diary-card-title">${escapeHtml(diary.title)}</h3>
@@ -175,6 +190,7 @@ function createDiaryCard(diary) {
         <div class="diary-card-content">
             ${escapeHtml(diary.content || '暂无内容')}
         </div>
+        ${tagsHtml}
         <div class="diary-card-footer">
             <span class="diary-card-date">${formatDateDisplay(date)}</span>
             <div class="diary-card-meta">
