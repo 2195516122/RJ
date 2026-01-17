@@ -201,7 +201,7 @@ function getDiaryById(id) {
 /**
  * Save new diary
  */
-function saveDiary(title, content, isPublic) {
+function saveDiary(title, content, isPublic, mood) {
     const now = new Date();
     const diary = {
         id: generateId(),
@@ -209,6 +209,7 @@ function saveDiary(title, content, isPublic) {
         content: content || '',
         isPublic: isPublic || false,
         shareId: isPublic ? generateId() : null,
+        mood: mood || null,
         createdAt: now.toISOString(),
         updatedAt: now.toISOString()
     };
@@ -232,7 +233,7 @@ window.saveDiaryToStorage = saveDiary;
 /**
  * Update existing diary
  */
-function updateDiary(id, title, content, isPublic) {
+function updateDiary(id, title, content, isPublic, mood) {
     const diaries = getDiaries();
     const index = diaries.findIndex(d => d.id === id);
 
@@ -244,6 +245,7 @@ function updateDiary(id, title, content, isPublic) {
     diary.title = title || diary.title;
     diary.content = content || diary.content;
     diary.isPublic = isPublic !== undefined ? isPublic : diary.isPublic;
+    diary.mood = mood !== undefined ? mood : diary.mood;
 
     // Generate or remove share ID based on visibility
     if (diary.isPublic && !diary.shareId) {
@@ -392,7 +394,10 @@ function getDiaryCountsByMonth(year, month) {
         const date = new Date(diary.createdAt);
         if (date.getFullYear() === year && date.getMonth() === month) {
             const day = date.getDate();
-            counts[day] = (counts[day] || 0) + 1;
+            if (!counts[day]) {
+                counts[day] = { count: 0, mood: diary.mood };
+            }
+            counts[day].count += 1;
         }
     });
 

@@ -4,6 +4,17 @@
 let autoSaveTimer = null;
 let hasUnsavedChanges = false;
 let editDiaryId = null;
+let selectedMood = null;
+
+// Mood emoji mapping
+const MOOD_EMOJIS = {
+    happy: '😊',
+    neutral: '😐',
+    sad: '😢',
+    angry: '😡',
+    sleepy: '😴',
+    love: '😍'
+};
 
 // ============================================
 // Initialize Write Page
@@ -21,6 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Set current date
     updateWriteDate();
+
+    // Initialize mood selector
+    initMoodSelector();
 
     // Focus on title
     document.getElementById('diaryTitle').focus();
@@ -64,6 +78,27 @@ function updateWriteDate() {
 }
 
 /**
+ * Initialize mood selector
+ */
+function initMoodSelector() {
+    const moodButtons = document.querySelectorAll('.mood-btn');
+
+    moodButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove selected class from all buttons
+            moodButtons.forEach(b => b.classList.remove('selected'));
+
+            // Add selected class to clicked button
+            btn.classList.add('selected');
+
+            // Store selected mood
+            selectedMood = btn.dataset.mood;
+            document.getElementById('selectedMood').value = selectedMood;
+        });
+    });
+}
+
+/**
  * Save draft data
  */
 function saveDraftData() {
@@ -96,6 +131,7 @@ function handleSaveDiary() {
     const title = document.getElementById('diaryTitle').value.trim();
     const content = document.getElementById('diaryContent').value.trim();
     const isPublic = document.getElementById('isPublic').checked;
+    const mood = selectedMood || null;
 
     // Validate
     if (!content) {
@@ -107,7 +143,7 @@ function handleSaveDiary() {
     let diary;
     if (editDiaryId) {
         // Update existing diary
-        diary = updateDiary(editDiaryId, title, content, isPublic);
+        diary = updateDiary(editDiaryId, title, content, isPublic, mood);
         if (diary) {
             showToast('日记已更新');
         } else {
@@ -116,7 +152,7 @@ function handleSaveDiary() {
         }
     } else {
         // Save new diary (call function from script.js)
-        diary = window.saveDiaryToStorage(title, content, isPublic);
+        diary = window.saveDiaryToStorage(title, content, isPublic, mood);
         showToast('日记已保存');
     }
 
@@ -142,6 +178,18 @@ function loadDiaryForEdit(id) {
     document.getElementById('diaryTitle').value = diary.title;
     document.getElementById('diaryContent').value = diary.content;
     document.getElementById('isPublic').checked = diary.isPublic;
+
+    // Load mood if exists
+    if (diary.mood) {
+        selectedMood = diary.mood;
+        document.getElementById('selectedMood').value = diary.mood;
+
+        // Find and select the mood button
+        const moodBtn = document.querySelector(`.mood-btn[data-mood="${diary.mood}"]`);
+        if (moodBtn) {
+            moodBtn.classList.add('selected');
+        }
+    }
 
     // Update word count
     updateWordCount();

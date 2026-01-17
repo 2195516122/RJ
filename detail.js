@@ -3,6 +3,16 @@
 // ============================================
 let currentDiary = null;
 
+// Mood emoji mapping
+const MOOD_EMOJIS = {
+    happy: '😊',
+    neutral: '😐',
+    sad: '😢',
+    angry: '😡',
+    sleepy: '😴',
+    love: '😍'
+};
+
 // ============================================
 // Initialize Detail Page
 // ============================================
@@ -46,6 +56,15 @@ function renderDiary(diary) {
 
     // Title
     document.getElementById('detailTitle').textContent = diary.title;
+
+    // Mood
+    const moodEl = document.getElementById('detailMood');
+    if (diary.mood && MOOD_EMOJIS[diary.mood]) {
+        moodEl.querySelector('.mood-icon').textContent = MOOD_EMOJIS[diary.mood];
+        moodEl.style.display = 'inline-flex';
+    } else {
+        moodEl.style.display = 'none';
+    }
 
     // Date and time
     document.getElementById('detailDate').textContent = formatDateDisplay(date);

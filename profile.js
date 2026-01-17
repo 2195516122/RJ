@@ -4,6 +4,16 @@
 let currentTab = 'diaries';
 let currentFilter = 'all';
 
+// Mood emoji mapping
+const MOOD_EMOJIS = {
+    happy: '😊',
+    neutral: '😐',
+    sad: '😢',
+    angry: '😡',
+    sleepy: '😴',
+    love: '😍'
+};
+
 // ============================================
 // Initialize Profile Page
 // ============================================
@@ -146,11 +156,20 @@ function createDiaryCard(diary) {
     const date = new Date(diary.createdAt);
     const wordCount = countWords(diary.content);
 
+    // Build mood indicator
+    let moodIndicator = '';
+    if (diary.mood && MOOD_EMOJIS[diary.mood]) {
+        moodIndicator = `<span class="card-mood">${MOOD_EMOJIS[diary.mood]}</span>`;
+    }
+
     card.innerHTML = `
         <div class="diary-card-header">
             <h3 class="diary-card-title">${escapeHtml(diary.title)}</h3>
-            <div class="diary-card-visibility">
-                <span>${diary.isPublic ? '🌐 公开' : '🔒 私密'}</span>
+            <div class="diary-card-meta-inline">
+                ${moodIndicator}
+                <div class="diary-card-visibility">
+                    <span>${diary.isPublic ? '🌐 公开' : '🔒 私密'}</span>
+                </div>
             </div>
         </div>
         <div class="diary-card-content">

@@ -456,6 +456,18 @@ body {
     border-radius: var(--radius-full);
 }
 
+.calendar-day-number {
+    display: block;
+}
+
+.calendar-day-mood {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 12px;
+    line-height: 1;
+}
+
 .calendar-day.selected {
     background: var(--primary-color);
     color: var(--text-inverse);
@@ -533,6 +545,18 @@ body {
     justify-content: space-between;
     gap: var(--spacing-md);
     margin-bottom: var(--spacing-md);
+}
+
+.diary-card-meta-inline {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
+}
+
+.card-mood {
+    font-size: var(--text-xl);
+    line-height: 1;
 }
 
 .diary-card-title {
@@ -770,6 +794,45 @@ body {
     color: var(--text-tertiary);
 }
 
+/* Mood Selector */
+.mood-selector {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.mood-btn {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: var(--text-xl);
+    padding: 0;
+}
+
+.mood-btn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--border-hover);
+    transform: scale(1.1);
+}
+
+.mood-btn.selected {
+    background: var(--primary-light);
+    border-color: var(--primary-color);
+    transform: scale(1.15);
+}
+
+.mood-emoji {
+    font-size: 24px;
+    display: block;
+}
+
 .form-actions {
     display: flex;
     gap: var(--spacing-md);
@@ -831,6 +894,15 @@ body {
     align-items: center;
     gap: var(--spacing-md);
     flex-wrap: wrap;
+}
+
+.detail-mood {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-full);
+    font-size: var(--text-lg);
 }
 
 .detail-date,

@@ -4,6 +4,16 @@
 let currentFilter = 'all';
 let viewDate = new Date();
 
+// Mood emoji mapping
+const MOOD_EMOJIS = {
+    happy: '😊',
+    neutral: '😐',
+    sad: '😢',
+    angry: '😡',
+    sleepy: '😴',
+    love: '😍'
+};
+
 // ============================================
 // Initialize Home Page
 // ============================================
@@ -63,7 +73,7 @@ function renderCalendar() {
     for (let day = 1; day <= daysInMonth; day++) {
         const dayElement = document.createElement('div');
         dayElement.className = 'calendar-day';
-        dayElement.textContent = day;
+        dayElement.innerHTML = `<span class="calendar-day-number">${day}</span>`;
 
         // Check if today
         if (year === today.getFullYear() &&
@@ -75,6 +85,14 @@ function renderCalendar() {
         // Check if has diary
         if (diaryCounts[day]) {
             dayElement.classList.add('has-diary');
+
+            // Add mood emoji if available
+            if (diaryCounts[day].mood && MOOD_EMOJIS[diaryCounts[day].mood]) {
+                const moodIndicator = document.createElement('span');
+                moodIndicator.className = 'calendar-day-mood';
+                moodIndicator.textContent = MOOD_EMOJIS[diaryCounts[day].mood];
+                dayElement.appendChild(moodIndicator);
+            }
         }
 
         // Add click event
