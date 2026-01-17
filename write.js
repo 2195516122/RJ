@@ -6,6 +6,7 @@ let hasUnsavedChanges = false;
 let editDiaryId = null;
 let selectedMood = null;
 let selectedTags = [];
+let hasDraftLoaded = false;
 
 // Mood emoji mapping
 const MOOD_EMOJIS = {
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadDiaryForEdit(diaryId);
     } else {
         // Load draft if exists
-        loadDraft();
+        loadDraftAndRestore();
     }
 
     // Set current date
@@ -79,6 +80,69 @@ function updateWordCount() {
 function updateWriteDate() {
     const now = new Date();
     document.getElementById('writeDate').textContent = formatDateDisplay(now);
+}
+
+/**
+ * Load draft and restore all fields
+ */
+function loadDraftAndRestore() {
+    const draft = loadDraft();
+    if (!draft) return;
+
+    // Restore basic fields
+    if (draft.title) document.getElementById('diaryTitle').value = draft.title;
+    if (draft.content) document.getElementById('diaryContent').value = draft.content;
+    if (draft.isPublic !== undefined) document.getElementById('isPublic').checked = draft.isPublic;
+
+    // Restore mood
+    if (draft.mood) {
+        selectedMood = draft.mood;
+        document.getElementById('selectedMood').value = draft.mood;
+
+        // Select the mood button
+        const moodBtn = document.querySelector(`.mood-btn[data-mood="${draft.mood}"]`);
+        if (moodBtn) {
+            moodBtn.classList.add('selected');
+        }
+    }
+
+    // Restore tags
+    if (draft.tags && draft.tags.length > 0) {
+        selectedTags = [...draft.tags];
+        document.getElementById('selectedTags').value = selectedTags.join(',');
+
+        // Select tag buttons
+        draft.tags.forEach(tag => {
+            const tagBtn = document.querySelector(`.tag-btn[data-tag="${tag}"]`);
+            if (tagBtn) {
+                tagBtn.classList.add('selected');
+            }
+        });
+    }
+
+    // Update word count
+    updateWordCount();
+
+    // Mark that we've loaded a draft
+    hasDraftLoaded = true;
+
+    // Show draft restoration notification
+    showDraftRestoredNotification();
+}
+
+/**
+ * Show draft restored notification
+ */
+function showDraftRestoredNotification() {
+    const statusEl = document.getElementById('autoSaveStatus');
+    if (statusEl) {
+        statusEl.textContent = '已恢复上次未保存的内容';
+        statusEl.className = 'auto-save-status';
+
+        setTimeout(() => {
+            statusEl.textContent = '';
+        }, 3000);
+    }
 }
 
 /**
@@ -136,8 +200,10 @@ function saveDraftData() {
     const title = document.getElementById('diaryTitle').value;
     const content = document.getElementById('diaryContent').value;
     const isPublic = document.getElementById('isPublic').checked;
+    const mood = selectedMood || null;
+    const tags = selectedTags || [];
 
-    saveDraft(title, content, isPublic);
+    saveDraft(title, content, isPublic, mood, tags);
 
     // Show saving status
     const statusEl = document.getElementById('autoSaveStatus');
@@ -184,6 +250,9 @@ function handleSaveDiary() {
         // Save new diary (call function from script.js)
         diary = window.saveDiaryToStorage(title, content, isPublic, mood, tags);
         showToast('日记已保存');
+
+        // Clear draft after successful save
+        clearDraft();
     }
 
     hasUnsavedChanges = false;
@@ -283,8 +352,40 @@ function goBack() {
 // Warn before leaving with unsaved changes
 // ============================================
 window.addEventListener('beforeunload', (e) => {
+    // Auto-save before leaving
+    if (!editDiaryId && hasUnsavedChanges) {
+        const title = document.getElementById('diaryTitle').value;
+        const content = document.getElementById('diaryContent').value;
+        const isPublic = document.getElementById('isPublic').checked;
+
+        if (title || content) {
+            saveDraft(title, content, isPublic, selectedMood, selectedTags);
+        }
+    }
+
+    // Show warning if there are unsaved changes
     if (hasUnsavedChanges) {
         e.preventDefault();
         e.returnValue = '';
+    }
+});
+
+// ============================================
+// Handle visibility change (auto-save when tab is hidden)
+// ============================================
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden && !editDiaryId && hasUnsavedChanges) {
+        const title = document.getElementById('diaryTitle').value;
+        const content = document.getElementById('diaryContent').value;
+        const isPublic = document.getElementById('isPublic').checked;
+
+        if (title || content) {
+            saveDraft(title, content, isPublic, selectedMood, selectedTags);
+
+            // Show brief notification
+            const statusEl = document.getElementById('autoSaveStatus');
+            statusEl.textContent = '内容已保存';
+            statusEl.className = 'auto-save-status';
+        }
     }
 });

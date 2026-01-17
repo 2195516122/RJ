@@ -7,7 +7,7 @@ const CONFIG = {
         USER: 'rj_user',
         DRAFT: 'rj_draft'
     },
-    AUTO_SAVE_DELAY: 1000, // milliseconds
+    AUTO_SAVE_DELAY: 2500, // milliseconds (2.5 seconds)
     TOAST_DURATION: 3000
 };
 
@@ -524,11 +524,13 @@ function getDiaryCountsByMonth(year, month) {
 /**
  * Save draft
  */
-function saveDraft(title, content, isPublic) {
+function saveDraft(title, content, isPublic, mood, tags) {
     const draft = {
         title,
         content,
         isPublic,
+        mood,
+        tags,
         savedAt: new Date().toISOString()
     };
     saveStorage(CONFIG.STORAGE_KEYS.DRAFT, draft);
